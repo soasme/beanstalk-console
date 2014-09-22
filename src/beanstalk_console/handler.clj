@@ -5,7 +5,8 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [ring.middleware.json :as json-middleware]
-            [beanstalk-clj.core :as beanstalk]))
+            [beanstalk-clj.core :as beanstalk]
+            [beanstalk-console.tmpl.home :as tmpl-home]))
 
 (defn beanstalk-proxy [f config & rest]
   (let [client (beanstalk/beanstalkd-factory config)
@@ -27,8 +28,8 @@
         (beanstalk-proxy beanstalk/list-tubes config)))
 
   ; Index Page
-  (GET "/" [] "Hello World")
-  (route/resources "/")
+  (GET "/" [] (tmpl-home/index))
+  (route/resources "/resources")
 
   (route/not-found "Not Found"))
 

@@ -7,36 +7,24 @@
             [ring.middleware.json :as json-middleware]
             [beanstalk-clj.core :as beanstalk]))
 
-(defn stats-job [config jid]
+(defn beanstalk-proxy [f config & rest]
   (let [client (beanstalk/beanstalkd-factory config)
-        stats (beanstalk/stats-job client jid)]
-    (response stats)))
-
-(defn stats-server [config]
-  (let [client (beanstalk/beanstalkd-factory config)
-        stats (beanstalk/stats-beanstalkd client)]
-    (response stats)))
-
-(defn stats-tube [config tube-name]
-  (let [client (beanstalk/beanstalkd-factory config)
-        stats (beanstalk/stats-tube client tube-name)]
-    (response stats)))
-
-(defn list-tubes [config]
-  (let [client (beanstalk/beanstalkd-factory config)
-        tubes (beanstalk/list-tubes client)]
-    (prn tubes)
-    (response tubes)))
+        data (apply f client rest)]
+    (response data)))
 
 (defroutes app-routes
 
   ; API
   (context
    "/api" []
-   (GET "/:config/stats-job/:jid" [config jid] (stats-job config jid))
-   (GET "/:config/stats-tube/:tube-name" [config tube-name] (stats-tube config tube-name))
-   (GET "/:config/stats" [config] (stats-server config))
-   (GET "/:config/list-tubes" [config] (list-tubes config)))
+   (GET "/:config/stats-job/:jid" [config jid]
+        (beanstalk-proxy beanstalk/stats-job config jid))
+   (GET "/:config/stats-tube/:tube-name" [config tube-name]
+        (beanstalk-proxy beanstalk/stats-tube config tube-name))
+   (GET "/:config/stats" [config]
+        (beanstalk-proxy beanstalk/stats-beanstalkd config))
+   (GET "/:config/list-tubes" [config]
+        (beanstalk-proxy beanstalk/list-tubes config)))
 
   ; Index Page
   (GET "/" [] "Hello World")

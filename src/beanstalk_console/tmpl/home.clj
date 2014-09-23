@@ -8,8 +8,10 @@
     [:meta {:charset "utf-8"}]
     [:meta {:name "description" :content "Beanstalk console"}]
     (page/include-css "/resources/js/lib/bootstrap/dist/css/bootstrap.min.css")
-    (page/include-js "/resources/js/lib/jquery/dist/jquery.min.js")
-    (page/include-js "/resources/js/lib/bootstrap/dist/js/bootstrap.min.js"
+    (page/include-js "/resources/js/lib/jquery/dist/jquery.min.js"
+                     "/resources/js/lib/bootstrap/dist/js/bootstrap.min.js"
+                     "/resources/js/lib/underscore/underscore-min.js"
+                     "/resources/js/lib/backbone/backbone.js"
                      "/resources/dist/js/main.js")]
    [:body
     [:nav.navbar.navbar-inverse.navbar-fixed-top {:role "nagivation"}

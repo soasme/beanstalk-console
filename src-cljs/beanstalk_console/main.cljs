@@ -1,2 +1,5 @@
 (ns beanstalk-console.main)
-(js/alert "Hello World")
+(def o {})
+(.extend js/_ o Backbone.Events)
+(.on o "debug" (fn [msg] (.debug js/console msg)))
+(.trigger o "debug" "Hello World")
